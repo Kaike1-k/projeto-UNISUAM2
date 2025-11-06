@@ -90,10 +90,10 @@
         const users = [
             {
                 id: 1,
-                name: 'adm master',
+                name: 'adm monstro',
                 birth_date: '1990-01-01',
                 gender: 'M',
-                mother_name: 'Maria Silva',
+                mother_name: 'Mamae Silva',
                 cpf: '123.456.789-00',
                 email: 'admin@sistema.com',
                 phone: '(+55)11-999999999',
