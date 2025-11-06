@@ -1,0 +1,260 @@
+/* ===== VARIÁVEIS CSS PARA TEMAS ===== */
+        :root {
+            --bg-gradient-light: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-gradient-dark: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #343a40;
+            --text-light: #212529;
+            --text-dark: #ffffff;
+            --border-light: rgba(0,0,0,0.125);
+            --border-dark: rgba(255,255,255,0.125);
+            --font-size-base: 1rem;
+        }
+
+        /* ===== ESTILOS GERAIS DO BODY ===== */
+        body {
+            background: var(--bg-gradient-light);
+            color: var(--text-light);
+            font-size: var(--font-size-base);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+
+        /* ===== TEMA ESCURO ===== */
+        body.dark-theme {
+            background: var(--bg-gradient-dark);
+            color: var(--text-dark);
+        }
+
+        /* ===== TAMANHOS DE FONTE ===== */
+        body.font-small { --font-size-base: 0.875rem; }
+        body.font-normal { --font-size-base: 1rem; }
+        body.font-large { --font-size-base: 1.125rem; }
+        body.font-xl { --font-size-base: 1.25rem; }
+
+        /* ===== CONTROLES DE TEMA E FONTE ===== */
+        .theme-controls {
+            position: fixed;
+            top: 80px; /* Posicionado mais abaixo para não cobrir informações */
+            left: 20px;
+            z-index: 1060;
+            background: var(--card-bg-light);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        /* Tema escuro para controles */
+        body.dark-theme .theme-controls {
+            background: var(--card-bg-dark);
+            border: 1px solid var(--border-dark);
+            color: var(--text-dark);
+        }
+
+        /* ===== ESTILOS DOS CARDS ===== */
+        .card {
+            background: var(--card-bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-theme .card {
+            background: var(--card-bg-dark);
+            border: 1px solid var(--border-dark);
+            color: var(--text-dark);
+        }
+
+        /* ===== HEADER DO SISTEMA ===== */
+        .system-header {
+            background: var(--card-bg-light);
+            border-bottom: 1px solid var(--border-light);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-theme .system-header {
+            background: var(--card-bg-dark);
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        /* ===== BOTÕES PERSONALIZADOS ===== */
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #5a6fd8, #6a4190);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* ===== INPUTS E FORMS ===== */
+        .form-control, .form-select {
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-theme .form-control,
+        body.dark-theme .form-select {
+            background: var(--card-bg-dark);
+            border: 2px solid var(--border-dark);
+            color: var(--text-dark);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        /* ===== TOAST NOTIFICATIONS ===== */
+        .toast {
+            background: var(--card-bg-light);
+            border: 1px solid var(--border-light);
+        }
+
+        body.dark-theme .toast {
+            background: var(--card-bg-dark);
+            border: 1px solid var(--border-dark);
+            color: var(--text-dark);
+        }
+
+        /* ===== ANIMAÇÕES ===== */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        /* ===== PRODUTOS EM DESTAQUE ===== */
+        .product-card {
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .product-card.blue {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: #2196f3;
+        }
+
+        .product-card.green {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            border-color: #4caf50;
+        }
+
+        .product-card.purple {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border-color: #9c27b0;
+        }
+
+        body.dark-theme .product-card.blue {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+        }
+
+        body.dark-theme .product-card.green {
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+        }
+
+        body.dark-theme .product-card.purple {
+            background: linear-gradient(135deg, #4a148c 0%, #6a1b9a 100%);
+        }
+
+        /* ===== MODAL PERSONALIZADO ===== */
+        .modal-content {
+            background: var(--card-bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 15px;
+        }
+
+        body.dark-theme .modal-content {
+            background: var(--card-bg-dark);
+            border: 1px solid var(--border-dark);
+            color: var(--text-dark);
+        }
+
+        /* ===== NAVEGAÇÃO ===== */
+        .nav-link {
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-theme .nav-link {
+            color: var(--text-dark);
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        /* ===== LOGS E TABELAS ===== */
+        .log-item, .user-item {
+            background: var(--card-bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-theme .log-item,
+        body.dark-theme .user-item {
+            background: var(--card-bg-dark);
+            border: 1px solid var(--border-dark);
+        }
+
+        .log-item:hover, .user-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* ===== DIAGRAMA DO BANCO DE DADOS ===== */
+        .db-diagram {
+            background: var(--card-bg-light);
+            border: 2px solid var(--border-light);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        body.dark-theme .db-diagram {
+            background: var(--card-bg-dark);
+            border: 2px solid var(--border-dark);
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 768px) {
+            .theme-controls {
+                top: 60px;
+                left: 10px;
+                padding: 8px;
+            }
+            
+            .container-fluid {
+                padding: 10px;
+            }
+        }

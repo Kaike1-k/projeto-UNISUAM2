@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Autenticação - Projeto</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome para ícones -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="projeto.css">
+    
+</head>
+<body class="font-normal">
+    <!-- ===== CONTROLES DE TEMA E FONTE (POSICIONADOS MAIS ABAIXO) ==== -->
+    <div class="theme-controls">
+        <!-- Controles de tamanho da fonte -->
+        <button onclick="decreaseFontSize()" class="btn btn-sm btn-outline-secondary" title="Diminuir fonte">
+            <i class="fas fa-minus"></i>
+        </button>
+        <span class="fw-bold mx-2">A</span>
+        <button onclick="increaseFontSize()" class="btn btn-sm btn-outline-secondary" title="Aumentar fonte">
+            <i class="fas fa-plus"></i>
+        </button>
+        
+        <!-- Separador visual -->
+        <div class="vr mx-2"></div>
+        
+        <!-- Controle de tema escuro/claro -->
+        <button onclick="toggleDarkMode()" class="btn btn-sm btn-outline-secondary" title="Alternar modo escuro">
+            <i id="theme-icon" class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- ===== CONTAINER DE NOTIFICAÇÕES TOAST ===== -->
+    <div id="toast-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
+
+    <!-- ===== MODAL CONTAINER ===== -->
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">Confirmação</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- Conteúdo do modal será inserido aqui -->
+                </div>
+                <div class="modal-footer" id="modal-footer">
+                    <!-- Botões do modal serão inseridos aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== HEADER DO SISTEMA (MOSTRADO APÓS LOGIN) ===== -->
+    <header id="header" class="system-header d-none">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center py-3">
+                <!-- Logo e navegação -->
+                <div class="d-flex align-items-center">
+                    <h1 class="h4 mb-0 text-primary fw-bold me-4">SmartShop</h1>
+                    <nav id="main-nav" class="d-none d-md-flex">
+                        <!-- Itens de navegação serão inseridos aqui via JavaScript -->
+                    </nav>
+                </div>
+                
+                <!-- Informações do usuário e logout -->
+                <div class="d-flex align-items-center">
+                    <span id="user-info" class="me-3"></span>
+                    <button onclick="logout()" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== CONTEÚDO PRINCIPAL ===== -->
+    <main class="container-fluid py-4">
+        <!-- ===== TELA DE LOGIN ===== -->
+        <div id="login-screen" class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <!-- Cabeçalho do login -->
+                        <div class="text-center mb-4">
+                            <i class="fas fa-shield-alt fa-4x text-primary mb-3"></i>
+                            <h2 class="card-title">Login do Sistema</h2>
+                            <p class="text-muted">Acesse sua conta</p>
+                        </div>
+                        
+                        <!-- Formulário de login -->
+                        <form id="login-form" onsubmit="handleLogin(event)">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Login</label>
+                                <input type="text" id="login-username" class="form-control" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Senha</label>
+                                <input type="password" id="login-password" class="form-control" required>
+                            </div>
+                            
+                            <!-- Botões do formulário -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Entrar</button>
+                                <button type="button" onclick="clearLoginForm()" class="btn btn-secondary">Limpar</button>
+                            </div>
+                        </form>
+                        
+                        <!-- Link para cadastro -->
+                        <div class="text-center mt-4">
+                            <p class="text-muted">Novo usuário?</p>
+                            <button onclick="showRegister()" class="btn btn-link text-primary fw-semibold">
+                                Cadastre-se aqui
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TELA DE CADASTRO ===== -->
+        <div id="register-screen" class="row justify-content-center d-none">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <!-- Cabeçalho do cadastro -->
+                        <div class="text-center mb-4">
+                            <i class="fas fa-user-plus fa-4x text-primary mb-3"></i>
+                            <h2 class="card-title">Cadastro de Usuário</h2>
+                            <p class="text-muted">Preencha todos os campos obrigatórios</p>
+                        </div>
+                        
+                        <!-- Formulário de cadastro -->
+                        <form id="register-form" onsubmit="handleRegister(event)">
+                            <div class="row">
+                                <!-- Nome completo -->
+                                <div class="col-12 mb-3">
+                                    <label class="form-label fw-bold">Nome Completo *</label>
+                                    <input type="text" id="reg-name" class="form-control" required minlength="15" maxlength="80">
+                                </div>
+                                
+                                <!-- Data de nascimento e sexo -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Data de Nascimento *</label>
+                                    <input type="date" id="reg-birth" class="form-control" required>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Sexo *</label>
+                                    <select id="reg-gender" class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Feminino</option>
+                                        <option value="O">Outro</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Nome materno -->
+                                <div class="col-12 mb-3">
+                                    <label class="form-label fw-bold">Nome Materno *</label>
+                                    <input type="text" id="reg-mother" class="form-control" required>
+                                </div>
+                                
+                                <!-- CPF e Email -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">CPF *</label>
+                                    <input type="text" id="reg-cpf" class="form-control" required maxlength="14" placeholder="000.000.000-00">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">E-mail *</label>
+                                    <input type="email" id="reg-email" class="form-control" required>
+                                </div>
+                                
+                                <!-- Telefone e CEP -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Telefone Celular *</label>
+                                    <input type="text" id="reg-phone" class="form-control" required placeholder="(+55)XX-XXXXXXXX">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">CEP *</label>
+                                    <input type="text" id="reg-cep" class="form-control" required maxlength="9" placeholder="00000-000">
+                                </div>
+                                
+                                <!-- Endereço completo -->
+                                <div class="col-12 mb-3">
+                                    <label class="form-label fw-bold">Endereço Completo *</label>
+                                    <input type="text" id="reg-address" class="form-control" required>
+                                </div>
+                                
+                                <!-- Login e Senha -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Login * (6 caracteres)</label>
+                                    <input type="text" id="reg-login" class="form-control" required minlength="6" maxlength="6">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Senha * (8 caracteres)</label>
+                                    <input type="password" id="reg-password" class="form-control" required minlength="8" maxlength="8">
+                                </div>
+                                
+                                <!-- Confirmação da senha -->
+                                <div class="col-12 mb-4">
+                                    <label class="form-label fw-bold">Confirmação da Senha *</label>
+                                    <input type="password" id="reg-confirm-password" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Botões do formulário -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Cadastrar</button>
+                                <button type="button" onclick="clearRegisterForm()" class="btn btn-secondary">Limpar Tela</button>
+                            </div>
+                        </form>
+                        
+                        <!-- Link para voltar ao login -->
+                        <div class="text-center mt-4">
+                            <button onclick="showLogin()" class="btn btn-link text-primary fw-semibold">
+                                ← Voltar ao Login
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TELA DE AUTENTICAÇÃO 2FA ===== -->
+        <div id="twofa-screen" class="row justify-content-center d-none">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <!-- Cabeçalho do 2FA -->
+                        <div class="text-center mb-4">
+                            <i class="fas fa-shield-alt fa-4x text-primary mb-3"></i>
+                            <h2 class="card-title">Autenticação 2FA</h2>
+                            <p class="text-muted">Responda a pergunta de segurança</p>
+                        </div>
+                        
+                        <!-- Pergunta de segurança -->
+                        <div class="mb-4">
+                            <div class="alert alert-info">
+                                <p id="twofa-question" class="mb-0 fw-semibold"></p>
+                            </div>
+                            
+                            <input type="text" id="twofa-answer" class="form-control" placeholder="Digite sua resposta" required>
+                            
+                            <div class="mt-2 text-muted small">
+                                Tentativas restantes: <span id="attempts-left" class="fw-bold text-danger">3</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Botão de verificação -->
+                        <div class="d-grid">
+                            <button onclick="verify2FA()" class="btn btn-primary">Verificar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== DASHBOARD PRINCIPAL ===== -->
+        <div id="dashboard-screen" class="d-none">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h2 class="card-title mb-4">Nossos Produtos</h2>
+                    
+                    <!-- Grid de produtos -->
+                    <div class="row g-4">
+                        <!-- Produto 1: Notebook -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="product-card blue p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-laptop fa-3x text-primary me-3"></i>
+                                    <h3 class="h5 mb-0">Notebook Premium</h3>
+                                </div>
+                                <p class="text-muted mb-3">Notebook de alta performance com processador Intel i7, 16GB RAM e SSD 512GB. Ideal para trabalho e entretenimento.</p>
+                                <div class="h4 text-primary fw-bold">R$ 3.299,00</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Produto 2: Smartphone -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="product-card green p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-mobile-alt fa-3x text-success me-3"></i>
+                                    <h3 class="h5 mb-0">Smartphone Pro</h3>
+                                </div>
+                                <p class="text-muted mb-3">Smartphone com câmera tripla de 108MP, tela AMOLED 6.7" e bateria de longa duração. Tecnologia 5G inclusa.</p>
+                                <div class="h4 text-success fw-bold">R$ 1.899,00</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Produto 3: Fone de Ouvido -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="product-card purple p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-headphones fa-3x" style="color: #9c27b0;" ></i>
+                                    <h3 class="h5 mb-0 ms-3">Fone Bluetooth</h3>
+                                </div>
+                                <p class="text-muted mb-3">Fone de ouvido sem fio com cancelamento de ruído ativo, 30h de bateria e qualidade de áudio premium.</p>
+                                <div class="h4 fw-bold" style="color: #9c27b0;">R$ 599,00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TELA DE GERENCIAMENTO DE USUÁRIOS ===== -->
+        <div id="user-management-screen" class="d-none">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h2 class="card-title mb-4">Consulta de Usuários</h2>
+                    
+                    <!-- Barra de pesquisa -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <input type="text" id="user-search" placeholder="Pesquisar por nome..." class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <button onclick="searchUsers()" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>Pesquisar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de usuários -->
+                    <div id="users-list">
+                        <!-- Usuários serão inseridos aqui via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TELA DE ALTERAÇÃO DE SENHA ===== -->
+        <div id="change-password-screen" class="row justify-content-center d-none">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <!-- Cabeçalho -->
+                        <div class="text-center mb-4">
+                            <i class="fas fa-key fa-4x text-primary mb-3"></i>
+                            <h2 class="card-title">Alterar Senha</h2>
+                            <p class="text-muted">Digite sua nova senha</p>
+                        </div>
+                        
+                        <!-- Formulário de alteração de senha -->
+                        <form onsubmit="handleChangePassword(event)">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Senha Atual</label>
+                                <input type="password" id="current-password" class="form-control" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nova Senha (8 caracteres)</label>
+                                <input type="password" id="new-password" class="form-control" required minlength="8" maxlength="8">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Confirmar Nova Senha</label>
+                                <input type="password" id="confirm-new-password" class="form-control" required>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Alterar Senha</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TELA DE LOGS ===== -->
+        <div id="logs-screen" class="d-none">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h2 class="card-title mb-4">Logs de Autenticação</h2>
+                    
+                    <!-- Filtros -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <select id="log-filter" class="form-select">
+                                <option value="all">Todos</option>
+                                <option value="name">Por Nome</option>
+                                <option value="cpf">Por CPF</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="log-search" placeholder="Digite para filtrar..." class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <button onclick="filterLogs()" class="btn btn-primary w-100">
+                                <i class="fas fa-filter me-2"></i>Filtrar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de logs -->
+                    <div id="logs-list">
+                        <!-- Logs serão inseridos aqui via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TELA DO MODELO DO BANCO DE DADOS ===== -->
+        <div id="db-model-screen" class="d-none">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h2 class="card-title mb-4">Modelo do Banco de Dados</h2>
+                    
+                    <!-- Diagrama do banco -->
+                    <div class="db-diagram">
+                        <svg viewBox="0 0 800 600" class="w-100" style="height: 400px;">
+                            <!-- Tabela USERS -->
+                            <rect x="50" y="50" width="200" height="200" fill="#e3f2fd" stroke="#1976d2" stroke-width="2"/>
+                            <text x="150" y="70" text-anchor="middle" class="fw-bold" fill="#1976d2">USERS</text>
+                            <line x1="50" y1="80" x2="250" y2="80" stroke="#1976d2" stroke-width="1"/>
+                            <text x="60" y="100" style="font-size: 12px;" fill="#333">id (PK)</text>
+                            <text x="60" y="120" style="font-size: 12px;" fill="#333">name</text>
+                            <text x="60" y="140" style="font-size: 12px;" fill="#333">birth_date</text>
+                            <text x="60" y="160" style="font-size: 12px;" fill="#333">gender</text>
+                            <text x="60" y="180" style="font-size: 12px;" fill="#333">mother_name</text>
+                            <text x="60" y="200" style="font-size: 12px;" fill="#333">cpf</text>
+                            <text x="60" y="220" style="font-size: 12px;" fill="#333">email</text>
+                            <text x="60" y="240" style="font-size: 12px;" fill="#333">phone</text>
+                            
+                            <!-- Tabela AUTH -->
+                            <rect x="300" y="50" width="200" height="150" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
+                            <text x="400" y="70" text-anchor="middle" class="fw-bold" fill="#7b1fa2">AUTH</text>
+                            <line x1="300" y1="80" x2="500" y2="80" stroke="#7b1fa2" stroke-width="1"/>
+                            <text x="310" y="100" style="font-size: 12px;" fill="#333">id (PK)</text>
+                            <text x="310" y="120" style="font-size: 12px;" fill="#333">user_id (FK)</text>
+                            <text x="310" y="140" style="font-size: 12px;" fill="#333">login</text>
+                            <text x="310" y="160" style="font-size: 12px;" fill="#333">password</text>
+                            <text x="310" y="180" style="font-size: 12px;" fill="#333">role</text>
+                            
+                            <!-- Tabela LOGS -->
+                            <rect x="550" y="50" width="200" height="120" fill="#e8f5e8" stroke="#388e3c" stroke-width="2"/>
+                            <text x="650" y="70" text-anchor="middle" class="fw-bold" fill="#388e3c">LOGS</text>
+                            <line x1="550" y1="80" x2="750" y2="80" stroke="#388e3c" stroke-width="1"/>
+                            <text x="560" y="100" style="font-size: 12px;" fill="#333">id (PK)</text>
+                            <text x="560" y="120" style="font-size: 12px;" fill="#333">user_id (FK)</text>
+                            <text x="560" y="140" style="font-size: 12px;" fill="#333">login_time</text>
+                            <text x="560" y="160" style="font-size: 12px;" fill="#333">twofa_method</text>
+                            
+                            <!-- Relacionamentos -->
+                            <line x1="250" y1="125" x2="300" y2="125" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <line x1="500" y1="125" x2="550" y2="125" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                        
+                        <!-- Descrição dos relacionamentos -->
+                        <div class="mt-4">
+                            <h5 class="fw-semibold mb-3">Relacionamentos:</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-arrow-right text-primary me-2"></i>USERS (1) → AUTH (1): Um usuário possui uma autenticação</li>
+                                <li><i class="fas fa-arrow-right text-primary me-2"></i>AUTH (1) → LOGS (N): Uma autenticação pode ter vários logs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TELA DE ERRO ===== -->
+        <div id="error-screen" class="row justify-content-center d-none">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body p-5 text-center">
+                        <i class="fas fa-exclamation-triangle fa-5x text-danger mb-4"></i>
+                        <h2 class="card-title text-danger">Erro no Sistema</h2>
+                        <p id="error-message" class="text-muted mb-4">Ocorreu um erro inesperado, Tente novamente.</p>
+                        <button onclick="showLogin()" class="btn btn-primary">
+                            Voltar ao Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="projeto.js"></script>
+    </body>
+</html>
