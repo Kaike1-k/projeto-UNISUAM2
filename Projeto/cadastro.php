@@ -8,13 +8,14 @@
 	$data	=	$_POST['data'];	
 	$cpf	=	$_POST['cpf'];	
 	$sexo	=   $_POST['sexo'];
-	$nomemae = $_POST['nomemae'];
-	$cep  =  $_POST[' cep'];
-	$endereco  =  $_POST['endereço'];
-	$email  =  $_POST['email'];
+	$nomemae = $_POST['nomemae']; 
+	$cep  =  $_POST['cep'];
+	$endereco  =  $_POST['endereco'];
+	$email  =  $_POST['email']; 
 	$telefone  =  $_POST['telefone'];
+
 	//	Preparando	comando	SQL	
-	$sql	=	"INSERT	INTO users (nome,	conta, senha, data_nascimento, cpf, sexo, nome_mãe, cep, endereço, email, telefone) 
+	$sql	=	"INSERT	INTO users (nome, conta, senha, data_nascimento, cpf, sexo, nome_mae, cep, endereco, email, telefone) 
 				 VALUES	(?,	?,	?,	?, ?, ?, ?, ?, ?, ?, ?)";	
 	
 	//	Usando	prepared	statement	para	segurança	
@@ -22,9 +23,9 @@
 	$stmt->bind_param("sssssssssss",	$nome,	$conta, $senha,	$data,	$cpf, $sexo, $nomemae, $cep, $endereco, $email, $telefone);	
 	
 	if	($stmt->execute())	{	
-		echo	"✅cadastrado	com	sucesso!";	
+		echo	"cadastrado	com	sucesso!";	
 	}	else	{	
-		echo	"❌	Erro:	"	.	$stmt->error;	
+		echo	"	Erro:	"	.	$stmt->error;	
 	}	
 	
 	$stmt->close();	
