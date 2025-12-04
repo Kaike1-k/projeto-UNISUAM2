@@ -150,7 +150,7 @@
                                 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">Sexo *</label>
-                                    <select id="reg-gender" class="form-select" required>
+                                    <select id="reg-gender" name="sexo" class="form-select" required>
                                         <option value="">Selecione</option>
                                         <option value="M">Masculino</option>
                                         <option value="F">Feminino</option>
@@ -161,7 +161,7 @@
                                 <!-- Nome materno -->
                                 <div class="col-12 mb-3">
                                     <label class="form-label fw-bold">Nome Materno *</label>
-                                    <input type="text" id="reg-mother" class="form-control" required>
+                                    <input type="text" id="reg-mother" name="nomemae" class="form-control" required>
                                 </div>
                                 
                                 <!-- CPF e Email -->
@@ -172,24 +172,24 @@
                                 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">E-mail *</label>
-                                    <input type="email" id="reg-email" class="form-control" required>
+                                    <input type="email" id="reg-email" name="email" class="form-control" required>
                                 </div>
                                 
                                 <!-- Telefone e CEP -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">Telefone Celular *</label>
-                                    <input type="text" id="reg-phone" class="form-control" required placeholder="(+55)XX-XXXXXXXX">
+                                    <input type="text" id="reg-phone" class="form-control" name="telefone" required placeholder="(+55)XX-XXXXXXXX">
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">CEP *</label>
-                                    <input type="text" id="reg-cep" class="form-control" required maxlength="9" placeholder="00000-000">
+                                    <input type="text" id="reg-cep" class="form-control" name="cep" required maxlength="9" placeholder="00000-000">
                                 </div>
                                 
                                 <!-- Endereço completo -->
                                 <div class="col-12 mb-3">
                                     <label class="form-label fw-bold">Endereço Completo *</label>
-                                    <input type="text" id="reg-address" class="form-control" required>
+                                    <input type="text" id="reg-address" name="endereço" class="form-control" required>
                                 </div>
                                 
                                 <!-- Login e Senha -->
@@ -200,7 +200,7 @@
                                 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">Senha * (8 caracteres)</label>
-                                    <input type="password" id="reg-password" class="form-control" required minlength="8" maxlength="8">
+                                    <input type="password" id="reg-password" name="senha" class="form-control" required minlength="8" maxlength="8">
                                 </div>
                                 
                                 <!-- Confirmação da senha -->
